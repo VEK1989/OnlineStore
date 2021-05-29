@@ -16,13 +16,13 @@ const actions = {
 			return
 		}
 
-		fetch(`/database/database${page}.json`)
+		fetch(`/itemslist/${page}`, {
+			method: 'GET'
+		})
 			.then(res => {
-				console.log(res)
 				return res.json()
 			})
 			.then(data => {
-				console.log(data)
 				commit('setData', data)
 			})
 	},
@@ -33,8 +33,8 @@ const actions = {
 
 const mutations = {
 	setData(state, newData) {
-		state.data = newData
-		state.itemOnPage = Object.keys(newData).slice(0)
+		state.data = { ...state.data, ...newData }
+		state.itemOnPage.push(...Object.keys(newData))
 	},
 	addInBasket(state, id) {
 		state.itemInBasket.push(id)

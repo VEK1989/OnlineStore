@@ -9,6 +9,9 @@
       <div :class="[$style.main__list]">
         <Item v-for="id in getItemOnPage" :key="id" :id="id" />
       </div>
+      <div :class="[$style.main__btn]" v-if="show">
+        <Button @mySuperEvent="showMoreClick">Показать еще</Button>
+      </div>
     </main>
     <footer :class="[$style.footer]">
       <div :class="[$style.footer__social]">Мы в соцсетях</div>
@@ -20,26 +23,35 @@
 <script>
 import Basket from "./components/Basket.vue";
 import Item from "./components/Item.vue";
+import Button from "./components/Button.vue";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
   components: {
     Basket,
     Item,
+    Button,
   },
   data() {
     return {
       items: [],
+      show: true,
+      page: 1,
     };
   },
   methods: {
     ...mapActions("goods", ["requestData"]),
+    showMoreClick() {
+      this.requestData(this.page).then(() => {
+        this.page++;
+      });
+    },
   },
   computed: {
     ...mapGetters("goods", ["getItemOnPage"]),
   },
   mounted() {
-    this.requestData(1);
+    this.showMoreClick();
   },
 };
 </script>
@@ -87,6 +99,10 @@ body {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+  }
+
+  &__btn {
+    text-align: center;
   }
 }
 
